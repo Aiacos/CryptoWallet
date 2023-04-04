@@ -4,10 +4,22 @@ from timeit import default_timer as timer
 
 import multiprocessing
 import threading
+import schedule
+import time
+import yagmail
 import wallet
 
 pattern = '0x324e2d42d7b65e5574787c331dfaa29d2dead666'
 
+def send_email(subject, body):
+    email = "uni.lorenzo.a@gmail.com"
+
+    yag = yagmail.SMTP(email)
+    yag.send(
+        to=email,
+        subject=subject,
+        contents=body
+    )
 #@jit(target_backend='cuda')
 def random_generate(connection):
     private_key, public_key = wallet.generateAccount()
@@ -19,15 +31,26 @@ def check_infura_address():
     connection = Web3(HTTPProvider(wallet.infura_endpoint))
 
     address_with_balance_list = []
-    for i in range(0, wallet.INFURA_LIMIT-1):
+    for i in range(0, 11-1):
         private_key, public_key, balance = random_generate(connection)
 
         if balance > 0.0:
-            data = {'private_key': private_key, 'public_key': public_key, 'balance': balance}
-            address_with_balance_list.append(data)
+            keys = {'private_key': private_key, 'public_key': public_key, 'balance': balance}
+            address_with_balance_list.append(keys)
 
-    return data
+    print('Infura generator done')
+    #global data
+    #data.append(address_with_balance_list)
 
+    data = []
+    for line in address_with_balance_list:
+        line_string = str(line)
+        data.append(line_string)
+    data = {'private_key': 'test pkey', 'public_key': 'test addres', 'balance': 12} #Todo: Delete this line
+    if data:
+        send_email('Infura Report', data)
+
+    return address_with_balance_list
 
 def check_alchemy_address():
     print('Start random generate with Alchemy')
@@ -38,10 +61,27 @@ def check_alchemy_address():
         private_key, public_key, balance = random_generate(connection)
 
         if balance > 0.0:
-            data = {'private_key': private_key, 'public_key': public_key, 'balance': balance}
-            address_with_balance_list.append(data)
+            keys = {'private_key': private_key, 'public_key': public_key, 'balance': balance}
+            address_with_balance_list.append(keys)
 
-    return data
+    print('Alchemy generator done')
+    global data
+    data.append(address_with_balance_list)
+    return address_with_balance_list
+
+def generate_random_address_with_balance_infura():
+    schedule.every().day.at("00:01").do(check_infura_address)
+
+    while True:
+        schedule.run_pending()
+        time.sleep(60)  # wait one minute
+
+def generate_random_address_with_balance_alchemy():
+    schedule.every().month.at("00:01").do(check_alchemy_address)
+
+    while True:
+        schedule.run_pending()
+        time.sleep(60)  # wait one minute
 
 def generate_vanity_eth(pattern):
     print('Start Vanity ETH: ', pattern)
@@ -63,9 +103,9 @@ def generate_vanity_eth(pattern):
 if __name__=="__main__":
 
     jobs = []
-    jobs.append(multiprocessing.Process(target=check_infura_address, name='Infura_ETH'))
-    jobs.append(multiprocessing.Process(target=check_alchemy_address, name='Alchemy_ETH'))
-    jobs.append(multiprocessing.Process(target=generate_vanity_eth, name='Vanity_ETH', args=(pattern,)))
+    jobs.append(multiprocessing.Process(target=generate_random_address_with_balance_infura, name='Infura_ETH'))
+    #jobs.append(multiprocessing.Process(target=check_alchemy_address, name='Alchemy_ETH'))
+    #jobs.append(multiprocessing.Process(target=generate_vanity_eth, name='Vanity_ETH', args=(pattern,)))
 
     for j in jobs:
         j.start()
@@ -77,3 +117,15 @@ if __name__=="__main__":
     #start = timer()
     #randomGenerateCUDA()
     #print("with GPU:", timer() - start)
+
+    # Multithread
+    #infura_thread = threading.Thread(target=check_infura_address)
+    #alchemy_thread = threading.Thread(target=check_alchemy_address)
+
+    # starting thread 1
+    #infura_thread.start()
+    # starting thread 2
+    #alchemy_thread.start()
+
+    #infura_thread.join()
+    #alchemy_thread.join()
