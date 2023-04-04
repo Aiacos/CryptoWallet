@@ -65,7 +65,7 @@ if __name__=="__main__":
     jobs = []
     jobs.append(multiprocessing.Process(target=check_infura_address))
     jobs.append(multiprocessing.Process(target=check_alchemy_address))
-    jobs.append(multiprocessing.Process(target=generate_vanity_eth, args=pattern))
+    jobs.append(multiprocessing.Process(target=generate_vanity_eth, args=(pattern,)))
 
     for j in jobs:
         j.start()
