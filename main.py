@@ -63,9 +63,9 @@ def generate_vanity_eth(pattern):
 if __name__=="__main__":
 
     jobs = []
-    jobs.append(multiprocessing.Process(target=check_infura_address))
-    jobs.append(multiprocessing.Process(target=check_alchemy_address))
-    jobs.append(multiprocessing.Process(target=generate_vanity_eth, args=(pattern,)))
+    jobs.append(multiprocessing.Process(target=check_infura_address, name='Infura_ETH'))
+    jobs.append(multiprocessing.Process(target=check_alchemy_address, name='Alchemy_ETH'))
+    jobs.append(multiprocessing.Process(target=generate_vanity_eth, name='Vanity_ETH', args=(pattern,)))
 
     for j in jobs:
         j.start()
