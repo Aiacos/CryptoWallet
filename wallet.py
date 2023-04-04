@@ -6,6 +6,9 @@ import re
 infura_endpoint = 'https://mainnet.infura.io/v3/972b4b8a084b434bba97948637e946be'
 alchemy_endpoint = 'https://eth-mainnet.g.alchemy.com/v2/csmoa4n5DwucntIE0vZtb5NtOiJLC_ez'
 
+INFURA_LIMIT = 100000
+ALCHEMY_LIMIT = 300000000
+
 
 def generateAccount():
     acct = Account.create()
@@ -29,18 +32,18 @@ def generatePublicKeyFromPrivate(private_key):
 
     return address
 
-def checkBalanceETH(connection, address):
+def checkBalanceETH(connection, address, coin='ether'):
     #safe_address = connection.to_checksum_address(address)
     #print("Safe: " + str(safe_address))
     wei_balance = connection.eth.get_balance(address)
-    balance = connection.from_wei(wei_balance, 'ether')
+    balance = connection.from_wei(wei_balance, coin)
 
     return balance
 
-def generateVanity(pattern, private_key, public_key):
+def check_vanity(pattern, private_key, public_key):
     if re.match(pattern, public_key):
-        print(f"Vanity address found: {public_key}")
-        print(f"Private key: {private_key}")
+        #print(f"Vanity address found: {public_key}")
+        #print(f"Private key: {private_key}")
 
         return private_key, public_key
 
