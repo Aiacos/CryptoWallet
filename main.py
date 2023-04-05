@@ -5,6 +5,7 @@ from timeit import default_timer as timer
 import multiprocessing
 import threading
 import schedule
+from datetime import date
 import time
 import yagmail
 import wallet
@@ -39,16 +40,17 @@ def check_infura_address():
             address_with_balance_list.append(keys)
 
     print('Infura generator done')
-    #global data
-    #data.append(address_with_balance_list)
 
     data = []
     for line in address_with_balance_list:
         line_string = str(line)
         data.append(line_string)
-    data = {'private_key': 'test pkey', 'public_key': 'test addres', 'balance': 12} #Todo: Delete this line
+
     if data:
-        send_email('Infura Report', data)
+        try:
+            send_email('Infura Report', "\n".join(data))
+        except:
+            print("\n".join(data))
 
     return address_with_balance_list
 
@@ -65,8 +67,18 @@ def check_alchemy_address():
             address_with_balance_list.append(keys)
 
     print('Alchemy generator done')
-    global data
-    data.append(address_with_balance_list)
+
+    data = []
+    for line in address_with_balance_list:
+        line_string = str(line)
+        data.append(line_string)
+
+    if data:
+        try:
+            send_email('Infura Report', "\n".join(data))
+        except:
+            print("\n".join(data))
+
     return address_with_balance_list
 
 def generate_random_address_with_balance_infura():
@@ -77,10 +89,12 @@ def generate_random_address_with_balance_infura():
         time.sleep(60)  # wait one minute
 
 def generate_random_address_with_balance_alchemy():
-    schedule.every().month.at("00:01").do(check_alchemy_address)
+    schedule.every().day.at("00:01").do(check_alchemy_address)
 
     while True:
-        schedule.run_pending()
+        if date.today().day == 1:
+            schedule.run_pending()
+
         time.sleep(60)  # wait one minute
 
 def generate_vanity_eth(pattern):
@@ -101,11 +115,12 @@ def generate_vanity_eth(pattern):
 
 
 if __name__=="__main__":
+    #yagmail.register('username', 'password')
 
     jobs = []
     jobs.append(multiprocessing.Process(target=generate_random_address_with_balance_infura, name='Infura_ETH'))
-    #jobs.append(multiprocessing.Process(target=check_alchemy_address, name='Alchemy_ETH'))
-    #jobs.append(multiprocessing.Process(target=generate_vanity_eth, name='Vanity_ETH', args=(pattern,)))
+    jobs.append(multiprocessing.Process(target=generate_random_address_with_balance_alchemy, name='Alchemy_ETH'))
+    jobs.append(multiprocessing.Process(target=generate_vanity_eth, name='Vanity_ETH', args=(pattern,)))
 
     for j in jobs:
         j.start()
