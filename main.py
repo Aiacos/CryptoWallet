@@ -32,7 +32,7 @@ def check_infura_address():
     connection = Web3(HTTPProvider(wallet.infura_endpoint))
 
     address_with_balance_list = []
-    for i in range(0, 11-1):
+    for i in range(0, wallet.INFURA_LIMIT-1):
         private_key, public_key, balance = random_generate(connection)
 
         if balance > 0.0:
