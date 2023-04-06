@@ -1,5 +1,5 @@
 from web3 import Web3, HTTPProvider
-from numba import jit, cuda, njit
+#from numba import jit, cuda, njit
 from timeit import default_timer as timer
 
 import multiprocessing
