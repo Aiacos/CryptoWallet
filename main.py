@@ -1,5 +1,5 @@
 from web3 import Web3, HTTPProvider
-#from numba import jit, cuda
+from numba import jit, cuda, njit
 from timeit import default_timer as timer
 
 import multiprocessing
@@ -98,16 +98,31 @@ def generate_random_address_with_balance_alchemy():
         time.sleep(60)  # wait one minute
 
 def generate_vanity_eth(pattern):
-    print('Start Vanity ETH: ', pattern)
-
     private_key, public_key = wallet.generateAccount()
     check = wallet.check_vanity(pattern, private_key, public_key)
 
     while not check:
         private_key, public_key = wallet.generateAccount()
+        #start = timer()
         check = wallet.check_vanity(pattern, private_key, public_key)
+        #print("Time:", timer() - start)
 
     print('Found Private_Key: ', private_key, ' Public_Key: ', public_key)
+    return check
+
+
+
+def process_generate_vanity_eth(pattern, n_threads=12):
+    print('Start Vanity ETH: ', pattern)
+
+    thread_list = []
+    for t in range(0, n_threads):
+        vanity_gen = threading.Thread(target=generate_vanity_eth, args=(pattern, ))
+        thread_list.append(vanity_gen)
+
+    for t in thread_list:
+        t.start()
+
 
 
 
@@ -120,7 +135,7 @@ if __name__=="__main__":
     jobs = []
     jobs.append(multiprocessing.Process(target=generate_random_address_with_balance_infura, name='Infura_ETH'))
     jobs.append(multiprocessing.Process(target=generate_random_address_with_balance_alchemy, name='Alchemy_ETH'))
-    jobs.append(multiprocessing.Process(target=generate_vanity_eth, name='Vanity_ETH', args=(pattern,)))
+    jobs.append(multiprocessing.Process(target=process_generate_vanity_eth, name='Vanity_ETH', args=(pattern, 4096)))
 
     for j in jobs:
         j.start()
