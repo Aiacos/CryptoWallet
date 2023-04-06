@@ -102,8 +102,8 @@ def generate_vanity_eth(pattern):
     check = wallet.check_vanity(pattern, private_key, public_key)
 
     while not check:
-        private_key, public_key = wallet.generateAccount()
         #start = timer()
+        private_key, public_key = wallet.generateAccount()
         check = wallet.check_vanity(pattern, private_key, public_key)
         #print("Time:", timer() - start)
 
