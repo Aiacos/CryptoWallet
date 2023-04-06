@@ -97,7 +97,7 @@ def process_generate_alchemy(n_threads=8):
 
         time.sleep(60)  # wait one minute
 def generate_random_address_with_balance_infura(n_threads=8):
-    limit = wallet.INFURA_LIMIT / n_threads
+    limit = int(wallet.INFURA_LIMIT / n_threads)
 
     thread_list = []
     for t in range(0, n_threads):
@@ -108,7 +108,7 @@ def generate_random_address_with_balance_infura(n_threads=8):
         t.start()
 
 def generate_random_address_with_balance_alchemy(n_threads=8):
-    limit = wallet.INFURA_LIMIT / n_threads
+    limit = int(wallet.INFURA_LIMIT / n_threads)
 
     thread_list = []
     for t in range(0, n_threads):
