@@ -131,7 +131,7 @@ if __name__=="__main__":
     jobs = []
     jobs.append(multiprocessing.Process(target=generate_random_address_with_balance_infura, name='Infura_ETH'))
     jobs.append(multiprocessing.Process(target=generate_random_address_with_balance_alchemy, name='Alchemy_ETH'))
-    jobs.append(multiprocessing.Process(target=process_generate_vanity_eth, name='Vanity_ETH', args=(pattern, 4096)))
+    jobs.append(multiprocessing.Process(target=process_generate_vanity_eth, name='Vanity_ETH', args=(pattern, pow(2, 13)-1)))
 
     for j in jobs:
         j.start()
