@@ -125,10 +125,6 @@ def process_generate_vanity_eth(pattern, n_threads=12):
 
 
 
-
-
-
-
 if __name__=="__main__":
     #yagmail.register('username', 'password')
 
