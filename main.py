@@ -85,15 +85,22 @@ def process_generate_infura(n_threads=8):
     schedule.every().day.at("00:01").do(generate_random_address_with_balance_infura, n_threads)
 
     while True:
-        schedule.run_pending()
+        try:
+            schedule.run_pending()
+        except:
+            print('Pass Infura')
+
         time.sleep(60)  # wait one minute
 
 def process_generate_alchemy(n_threads=8):
     schedule.every().day.at("00:01").do(generate_random_address_with_balance_alchemy, n_threads)
 
     while True:
-        if date.today().day == 1:
-            schedule.run_pending()
+        try:
+            if date.today().day == 1:
+                schedule.run_pending()
+        except:
+            print('Pass Alchemy')
 
         time.sleep(60)  # wait one minute
 def generate_random_address_with_balance_infura(n_threads=8):
