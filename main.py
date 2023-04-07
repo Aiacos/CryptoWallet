@@ -24,7 +24,11 @@ def send_email(subject, body):
 #@jit(target_backend='cuda')
 def random_generate(connection):
     private_key, public_key = wallet.generateAccount()
-    balance = wallet.checkBalanceETH(connection, public_key)
+
+    try:
+        balance = wallet.checkBalanceETH(connection, public_key)
+    except:
+        balance = 0.0
 
     return private_key, public_key, balance
 def check_infura_address(limit):
