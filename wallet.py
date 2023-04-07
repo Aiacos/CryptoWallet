@@ -7,7 +7,7 @@ infura_endpoint = 'https://mainnet.infura.io/v3/972b4b8a084b434bba97948637e946be
 alchemy_endpoint = 'https://eth-mainnet.g.alchemy.com/v2/csmoa4n5DwucntIE0vZtb5NtOiJLC_ez'
 
 INFURA_LIMIT = 100000
-ALCHEMY_LIMIT = 300000000
+ALCHEMY_LIMIT = 300000000000
 
 
 def generateAccount():
