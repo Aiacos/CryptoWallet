@@ -90,7 +90,8 @@ def process_generate_infura(n_threads=8):
 
     while True:
         try:
-            schedule.run_pending()
+            # schedule.run_pending()
+            schedule.run_all()
         except:
             print('Pass Infura')
 
@@ -101,8 +102,9 @@ def process_generate_alchemy(n_threads=8):
 
     while True:
         try:
-            if date.today().day == 1:
-                schedule.run_pending()
+            if date.today().day == 8:
+                #schedule.run_pending()
+                schedule.run_all()
         except:
             print('Pass Alchemy')
 

@@ -27,6 +27,8 @@ from deap import tools
 
 import multiprocessing
 
+import wallet
+
 pool = multiprocessing.Pool()
 
 
@@ -34,10 +36,7 @@ pool = multiprocessing.Pool()
 pattern = '0x324e2D42D7B65E5574787C331DfaA29d2Dead666' #0x324e2d42d7b65e5574787c331dfaa29d2dead666
 
 def generateAccount():
-    acct = Account.create()
-    #address = acct.address#.lower()
-
-    private_key = acct.key.hex()
+    private_key, public_key = wallet.generateAccount()
 
     return [x for x in private_key]
 
@@ -68,7 +67,7 @@ def fitness(individual):
         acct = Account.from_key(pri_key)
         address = acct.address
         print("Address: ",address)
-        for c, i in zip(address, pattern):
+        for c, i in zip(address, pattern.lower()):
             if c == i:
                 counter = counter + 1
 
