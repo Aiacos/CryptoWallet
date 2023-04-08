@@ -108,6 +108,8 @@ def process_generate_alchemy(n_threads=8):
 
         time.sleep(60)  # wait one minute
 def generate_random_address_with_balance_infura(n_threads=8):
+    print('Start random generate with Infura')
+
     limit = int(wallet.INFURA_LIMIT / n_threads)
 
     thread_list = []
@@ -119,6 +121,8 @@ def generate_random_address_with_balance_infura(n_threads=8):
         t.start()
 
 def generate_random_address_with_balance_alchemy(n_threads=8):
+    print('Start random generate with Alchemy')
+
     limit = int(wallet.INFURA_LIMIT / n_threads)
 
     thread_list = []
@@ -168,7 +172,7 @@ if __name__=="__main__":
     jobs = []
     jobs.append(multiprocessing.Process(target=process_generate_infura, args=(8, ), name='Infura_ETH'))
     jobs.append(multiprocessing.Process(target=process_generate_alchemy, args=(8, ), name='Alchemy_ETH'))
-    jobs.append(multiprocessing.Process(target=process_generate_vanity_eth, name='Vanity_ETH', args=(pattern.lower(), pow(2, 9)-1)))
+    jobs.append(multiprocessing.Process(target=process_generate_vanity_eth, name='Vanity_ETH', args=(pattern.lower(), pow(2, 8)-1)))
 
     for j in jobs:
         j.start()
