@@ -32,7 +32,6 @@ def random_generate(connection):
 
     return private_key, public_key, balance
 def check_infura_address(limit):
-    print('Start random generate with Infura')
     connection = Web3(HTTPProvider(wallet.infura_endpoint))
 
     address_with_balance_list = []
@@ -59,7 +58,6 @@ def check_infura_address(limit):
     return address_with_balance_list
 
 def check_alchemy_address(limit):
-    print('Start random generate with Alchemy')
     connection = Web3(HTTPProvider(wallet.alchemy_endpoint))
 
     address_with_balance_list = []
@@ -90,8 +88,8 @@ def process_generate_infura(n_threads=8):
 
     while True:
         try:
-            # schedule.run_pending()
-            schedule.run_all()
+            schedule.run_pending()
+            #schedule.run_all()
         except:
             print('Pass Infura')
 
@@ -102,9 +100,9 @@ def process_generate_alchemy(n_threads=8):
 
     while True:
         try:
-            if date.today().day == 8:
-                #schedule.run_pending()
-                schedule.run_all()
+            if date.today().day == 1:
+                schedule.run_pending()
+                #schedule.run_all()
         except:
             print('Pass Alchemy')
 
