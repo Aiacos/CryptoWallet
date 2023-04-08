@@ -138,6 +138,7 @@ def generate_vanity_eth(pattern):
         private_key, public_key = wallet.generateAccount()
         check = wallet.check_vanity(pattern, private_key, public_key)
         #print("Time:", timer() - start)
+        #print(private_key, public_key)
 
     try:
         send_email('Infura Report', str('Found Private_Key: ', private_key, ' Public_Key: ', public_key))
@@ -167,7 +168,7 @@ if __name__=="__main__":
     jobs = []
     jobs.append(multiprocessing.Process(target=process_generate_infura, args=(8, ), name='Infura_ETH'))
     jobs.append(multiprocessing.Process(target=process_generate_alchemy, args=(8, ), name='Alchemy_ETH'))
-    jobs.append(multiprocessing.Process(target=process_generate_vanity_eth, name='Vanity_ETH', args=(pattern, pow(2, 9)-1)))
+    jobs.append(multiprocessing.Process(target=process_generate_vanity_eth, name='Vanity_ETH', args=(pattern.lower(), pow(2, 9)-1)))
 
     for j in jobs:
         j.start()
