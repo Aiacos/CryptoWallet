@@ -1,5 +1,8 @@
 from eth_account import Account
 from web3 import Web3, HTTPProvider
+from secrets import token_bytes
+from coincurve import PublicKey
+from sha3 import keccak_256
 import re
 
 
@@ -10,11 +13,21 @@ INFURA_LIMIT = 100000
 ALCHEMY_LIMIT = 300000000000
 
 
-def generateAccount():
-    acct = Account.create()
-    address = acct.address#.lower()
 
-    private_key = acct.key.hex()
+
+def generateAccount(fast=True):
+    if fast:
+        p_key = keccak_256(token_bytes(32)).digest()
+        public_key = PublicKey.from_valid_secret(p_key).format(compressed=False)[1:]
+        addr = keccak_256(public_key).digest()[-20:]
+
+        private_key = p_key.hex()
+        address = '0x' + addr.hex()
+    else:
+        acct = Account.create()
+        address = acct.address#.lower()
+
+        private_key = acct.key.hex()
 
     return private_key, address
 
