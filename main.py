@@ -92,8 +92,8 @@ def check_alchemy_address(limit=0):
 
 
 
-def process_generate_infura(n_threads=8):
-    schedule.every().day.at("00:01").do(generate_random_address_with_balance_infura, n_threads)
+def scheduler_generate_infura(n_threads=8):
+    schedule.every().day.at("00:01").do(generate_random_address_infura, n_threads)
 
     while True:
         try:
@@ -105,12 +105,12 @@ def process_generate_infura(n_threads=8):
         time.sleep(60)  # wait one minute
 
 
-def process_generate_alchemy(n_threads=8):
-    schedule.every().day.at("10:13").do(generate_random_address_with_balance_alchemy, n_threads)
+def scheduler_generate_alchemy(n_threads=8):
+    schedule.every().day.at("00:01").do(generate_random_address_alchemy, n_threads)
 
     while True:
         try:
-            if date.today().day == 11:
+            if date.today().day == 1:
                 schedule.run_pending()
                 # schedule.run_all()
         except:
@@ -119,7 +119,7 @@ def process_generate_alchemy(n_threads=8):
         time.sleep(60)  # wait one minute
 
 
-def generate_random_address_with_balance_infura(n_threads=8):
+def generate_random_address_infura(n_threads=8):
     print('Start random generate with Infura')
 
     limit = int(wallet.INFURA_LIMIT / n_threads)
@@ -133,7 +133,7 @@ def generate_random_address_with_balance_infura(n_threads=8):
         t.start()
 
 
-def generate_random_address_with_balance_alchemy(n_threads=8):
+def generate_random_address_alchemy(n_threads=8):
     print('Start random generate with Alchemy')
 
     limit = int(wallet.ALCHEMY_LIMIT / n_threads)
@@ -146,32 +146,12 @@ def generate_random_address_with_balance_alchemy(n_threads=8):
     for t in thread_list:
         t.start()
 
-
-def generate_vanity_eth(pattern):
-    private_key, public_key = wallet.generateAccount()
-    check = wallet.check_vanity(pattern, private_key, public_key)
-
-    while not check:
-        # start = timer()
-        private_key, public_key = wallet.generateAccount()
-        check = wallet.check_vanity(pattern, private_key, public_key)
-        # print("Time:", timer() - start)
-        # print(private_key, public_key)
-
-    try:
-        send_email('Infura Report', str('Found Private_Key: ', private_key, ' Public_Key: ', public_key))
-    except:
-        print('Found Private_Key: ', private_key, ' Public_Key: ', public_key)
-
-    return check
-
-
 def process_generate_vanity_eth(pattern, n_threads=12):
     print('Start Vanity ETH: ', pattern)
 
     thread_list = []
     for t in range(0, n_threads):
-        vanity_gen = threading.Thread(target=generate_vanity_eth, args=(pattern,))
+        vanity_gen = threading.Thread(target=generate_random_address_alchemy, args=(pattern,))
         thread_list.append(vanity_gen)
 
     for t in thread_list:
@@ -182,19 +162,9 @@ if __name__ == "__main__":
     # yagmail.register('username', 'password')
 
     jobs = []
-    # jobs.append(multiprocessing.Process(target=process_generate_infura, args=(8, ), name='Infura_ETH'))
-    # jobs.append(multiprocessing.Process(target=process_generate_alchemy, args=(8, ), name='Alchemy_ETH'))
+    #jobs.append(multiprocessing.Process(target=scheduler_generate_infura, args=(8, ), name='Infura_ETH'))
+    jobs.append(multiprocessing.Process(target=generate_random_address_alchemy, args=(8, ), name='Alchemy_ETH'))
     # jobs.append(multiprocessing.Process(target=process_generate_vanity_eth, name='Vanity_ETH', args=(pattern.lower(), pow(2, 8)-1)))
 
     for j in jobs:
         j.start()
-
-    connection = Web3(HTTPProvider(wallet.alchemy_endpoint))
-    print(connection.isConnected())
-    while True:
-        private_key, public_key, balance, mnemonic = random_generate(connection)
-
-        # print(mnemonic, balance)
-        if balance and balance > 0.0:
-            keys = {'private_key': private_key, 'public_key': public_key, 'balance': balance, 'Mnemonic: ': mnemonic}
-            print(keys)
