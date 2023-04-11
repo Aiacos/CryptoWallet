@@ -63,16 +63,16 @@ def checkBalanceETH(connection, address, coin='ether'):
 
     return balance
 
-def check_vanity(pattern, private_key, public_key, regex=False):
+def check_vanity(pattern, public_key, regex=False):
     if regex:
         if pattern in public_key:
-            return private_key, public_key
+            return True
         else:
-            return None
+            return False
     else:
         if pattern == public_key:
-            return private_key, public_key
+            return True
         else:
-            return None
+            return False
 
     return None

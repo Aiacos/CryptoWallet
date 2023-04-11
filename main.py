@@ -12,6 +12,7 @@ import wallet
 
 pattern = '0x324e2d42d7b65e5574787c331dfaa29d2dead666'
 
+
 def send_email(subject, body):
     email = "uni.lorenzo.a@gmail.com"
 
