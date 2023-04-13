@@ -173,7 +173,7 @@ if __name__ == "__main__":
     # yagmail.register('username', 'password')
 
     jobs = []
-    jobs.append(multiprocessing.Process(target=generate_random_address_infura, args=(8, ), name='Infura_ETH'))
+    jobs.append(multiprocessing.Process(target=scheduler_generate_infura, args=(8, ), name='Infura_ETH'))
     jobs.append(multiprocessing.Process(target=scheduler_generate_alchemy, args=(8, ), name='Alchemy_ETH'))
     #jobs.append(multiprocessing.Process(target=process_generate_vanity_eth, name='Vanity_ETH', args=(pattern, 256)))
 
