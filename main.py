@@ -100,8 +100,8 @@ def scheduler_generate_infura(n_threads=8):
 
     while True:
         try:
-            # schedule.run_pending()
-            schedule.run_all()
+            schedule.run_pending()
+            #schedule.run_all()
         except:
             print('Pass Infura')
 
