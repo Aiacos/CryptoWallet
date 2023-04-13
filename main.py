@@ -84,13 +84,13 @@ def check_infura_address(limit):
     connection = Web3(HTTPProvider(wallet.infura_endpoint))
 
     infura_instance = RandomGenerateAddress(connection)
-    infura_instance.generate_address(limit)
+    infura_instance.generate_address(limit - 1)
 
 def check_alchemy_address(limit=0):
     connection = Web3(HTTPProvider(wallet.alchemy_endpoint))
 
     infura_instance = RandomGenerateAddress(connection)
-    infura_instance.generate_address(limit)
+    infura_instance.generate_address(limit - 1)
 
 
 
