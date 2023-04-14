@@ -62,11 +62,11 @@ def fitness(individual):
 
     pri_key = ""
     pri_key = pri_key.join(individual)
-    print("Private: ", pri_key)
+    #print("Private: ", pri_key)
     try:
         acct = Account.from_key(pri_key)
         address = acct.address
-        print("Address: ",address)
+        #print("Address: ",address)
         for c, i in zip(address, pattern.lower()):
             if c == i:
                 counter = counter + 1
@@ -94,7 +94,7 @@ def main():
     stats.register("min", numpy.min)
     stats.register("max", numpy.max)
 
-    pop, log = algorithms.eaSimple(pop, toolbox, cxpb=0.5, mutpb=0.5, ngen=500,
+    pop, log = algorithms.eaSimple(pop, toolbox, cxpb=0.5, mutpb=0.5, ngen=10,
                                    stats=stats, halloffame=hof, verbose=True)
 
     return pop, log, hof

@@ -61,12 +61,12 @@ def checkBalanceETH(connection, address, coin='ether'):
     wei_balance = connection.eth.get_balance(address)
 
     try:
-        balance = connection.fromWei(wei_balance, coin)
-    except:
         try:
-            balance = connection.from_wei(wei_balance, coin)
+            balance = connection.fromWei(wei_balance, coin)
         except:
-            return None
+            balance = connection.from_wei(wei_balance, coin)
+    except:
+        return None
 
     return balance
 
