@@ -84,7 +84,7 @@ def main():
     random.seed(64)
     POP_SIZE = 100
 
-    pop = toolbox.population(n=10000)
+    pop = toolbox.population(n=1000)
     #ind = creator.Individual(toolbox.attr_str())
     #pop = [creator.Individual(toolbox.attr_str()) for _ in range(POP_SIZE)]
     hof = tools.HallOfFame(1)
@@ -94,7 +94,7 @@ def main():
     stats.register("min", numpy.min)
     stats.register("max", numpy.max)
 
-    pop, log = algorithms.eaSimple(pop, toolbox, cxpb=0.5, mutpb=0.5, ngen=300,
+    pop, log = algorithms.eaSimple(pop, toolbox, cxpb=0.5, mutpb=0.5, ngen=500,
                                    stats=stats, halloffame=hof, verbose=True)
 
     return pop, log, hof
@@ -106,4 +106,4 @@ if __name__ == "__main__":
     p_key = s.join(hof[0])
     acct = Account.from_key(p_key)
     address = acct.address
-    print(p_key, address)
+    print('HoF: ', p_key, address)
