@@ -45,7 +45,7 @@ class RandomGenerateAddress:
         if check_balance:
             balance = self.get_balance(str(public_key))
         else:
-            balance =0.0
+            balance = None
 
         return {'private_key': private_key, 'public_key': public_key, 'balance': balance, 'mnemonic: ': mnemonic}
 
@@ -63,6 +63,7 @@ class RandomGenerateAddress:
                         self.vanity_address_list.append(key)
                         if console_print: print(key)
 
+                if check_balance and key['balance'] == None: break
                 if check_balance and key['balance'] > 0.0:
                     self.valid_address_list.append(key)
                     if console_print: print(key)
@@ -76,6 +77,7 @@ class RandomGenerateAddress:
                         self.vanity_address_list.append(key)
                         if console_print: print(key)
 
+                if check_balance and key['balance'] == None: break
                 if check_balance and key['balance'] > 0.0:
                     self.valid_address_list.append(key)
                     if console_print: print(key)
