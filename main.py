@@ -56,7 +56,7 @@ class RandomGenerateAddress:
         if iteration_limit == 0:
             while True:
                 key = self.generate_and_check_balance(gen_mode, check_balance)
-                if console_print_empty: print(key)
+                if console_print_empty: print(key, end="\r", flush=True)
 
                 if vanity_address:
                     if self.check_vanity(vanity_address, key['public_key'], regex):
@@ -69,7 +69,7 @@ class RandomGenerateAddress:
         else:
             for i in range(0, iteration_limit):
                 key = self.generate_and_check_balance(gen_mode, check_balance)
-                if console_print_empty: print(key)
+                if console_print_empty: print(key, end="\r", flush=True)
 
                 if vanity_address:
                     if self.check_vanity(vanity_address, key['public_key'], regex):
