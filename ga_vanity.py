@@ -36,7 +36,7 @@ pool = multiprocessing.Pool()
 pattern = '0x324e2D42D7B65E5574787C331DfaA29d2Dead666' #0x324e2d42d7b65e5574787c331dfaa29d2dead666
 
 def generateAccount():
-    private_key, public_key = wallet.generateAccount()
+    private_key, public_key, mnemonic = wallet.generateAccount('fast')
 
     return [x for x in private_key]
 
@@ -77,7 +77,7 @@ def fitness(individual):
 
 toolbox.register("evaluate", fitness)
 toolbox.register("mate", tools.cxTwoPoint)
-toolbox.register("mutate", tools.mutFlipBit, indpb=0.05)
+toolbox.register("mutate", tools.mutShuffleIndexes, indpb=0.05)
 toolbox.register("select", tools.selTournament, tournsize=3)
 
 def main():
