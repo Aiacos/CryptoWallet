@@ -1,18 +1,13 @@
+import itertools
 from bit import Key
 from tqdm import tqdm
 import threading
-import numpy
 
 pattern = '13zb1hQbWVsc2S7ZTZnP2G4undNNpdh5so'
 range_str = '20000000000000000:3ffffffffffffffff'
 
-#pattern = '1DBaumZxUkM4qMQRt2LVWyFJq5kDtSZQot'
-#range_str = '800:fff'
-
-range_min, range_max = range_str.split(':')
-
-n = int(range_max, 16) - int(range_min, 16)
-print('Range: ', n)
+pattern = '1DBaumZxUkM4qMQRt2LVWyFJq5kDtSZQot'
+range_str = '800:fff'
 
 
 def generate_account(hex=None):
@@ -40,13 +35,42 @@ def batch_single():
 
 
 def divide_chunks(l, n):
+    return itertools.tee(l, n)
     # looping till length l
-    for i in range(0, len(l), n):
-        yield l[i:i + n]
+    #for i in range(0, len(l), n):
+    #    yield l[i:i + n - 1]
 
+def convert_split(range_str, divisions=100):
+    range_min, range_max = range_str.split(':')
+
+    int_min = int(range_min, 16)
+    int_max = int(range_max, 16)
+
+    l, chunk = generate_batch(int_min, int_max, divisions-1)
+    data = {'min': int_min, 'max': int_max, 'range_iterator': l, 'iterator_len': sum(1 for _ in l), 'chunk': chunk}
+
+    return data
+
+def generate_batch(min, max, p=100):
+    r = range(min, max)
+    chunk = (max - min) / p
+    splitted_list = divide_chunks(r, int(chunk))
+
+    return splitted_list, chunk
 
 if __name__ == "__main__":
-    batch_single()
+    k = Key()
+    p = k.public_key
+    print(p.hex(), len(p.hex()))
+
+    dt = convert_split(range_str, 10)
+    print(dt)
+    for i in dt['range_iterator']:
+        print(i)
+        for c in i:
+            pass
+            #print(c)
+
     """
     n_threads = 10
 
