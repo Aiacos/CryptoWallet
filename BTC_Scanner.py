@@ -6,8 +6,8 @@ import threading
 pattern = '13zb1hQbWVsc2S7ZTZnP2G4undNNpdh5so'
 range_str = '20000000000000000:3ffffffffffffffff'
 
-pattern = '1DBaumZxUkM4qMQRt2LVWyFJq5kDtSZQot'
-range_str = '800:fff'
+pattern = '1GnNTmTVLZiqQfLbAdp9DVdicEnB5GoERE'
+range_str = '20000:3ffff'
 
 
 def generate_account(hex=None, scalar=None):
@@ -51,9 +51,9 @@ def generate_batch(min, max, p=100):
 if __name__ == "__main__":
     dt = convert_split(range_str, 100)
     print(dt)
-    for i in tqdm(dt['range_iterator']):
+    for i in tqdm(dt['range_iterator'], desc='Main Loop'):
         #print(i)
-        for c in i:
+        for c in tqdm(i, desc='Sedondary Loop'):
             priv, address = generate_account(scalar=c)
             #print(priv, address)
             if address == pattern:
