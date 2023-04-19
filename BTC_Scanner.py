@@ -1,4 +1,6 @@
+import os
 import sys
+from pathlib import Path
 import itertools
 #from itertools import batched
 import more_itertools
@@ -58,7 +60,7 @@ def chunks_generator(iterable, size):
     return it_slice
 
 
-def main_loop(pattern, range_str, sys_call=True):
+def main_loop(pattern, range_str, sys_call=None):
     dt = convert_split(range_str, 100)
     #print(dt['chunk'])
     for slice in tqdm(dt['iterator_slices'], desc='Main Loop'):
@@ -67,7 +69,7 @@ def main_loop(pattern, range_str, sys_call=True):
         str_hex_range = hex(int_min) + ':' + hex(int_max)
 
         if sys_call:
-            sys_call_app(pattern, str_hex_range, print)
+            sys_call_app(pattern, str_hex_range, sys_call)
         else:
             result = sub_iterator(int_min, int_max)
             if result:
@@ -78,10 +80,24 @@ def main_loop(pattern, range_str, sys_call=True):
 def sys_call_app(pattern, hex_range, function):
     function(pattern, hex_range)
 
+def run_keyhunt(pattern, hex_range, project='keyhunt', workspace='workspace'):
+    path_to_project = Path.home() / workspace / project
+    win_key_cmd = './keyhunt.exe'
+    linux_key_cmd = './keyhunt'
+    args = 'test1 test2 test3'
+
+    os.system('cd ' + str(path_to_project))
+
+    if sys.platform.startswith('win'):
+        os.system('')
+        print('Running Windows', ' '.join((win_key_cmd, args)))
+    else:
+        print('Running UNIX', ' '.join((win_key_cmd, args)))
+
 
 if __name__ == "__main__":
     argv = sys.argv
-    main_loop(argv[1], argv[2])
+    main_loop(argv[1], argv[2], run_keyhunt)
     #main_loop(pattern, range_str)
 
     """
