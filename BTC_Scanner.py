@@ -75,8 +75,8 @@ def main_loop(pattern, range_str, sys_call=True):
                 return
 
 
-def sys_call_app(pattern, hex_range, funcion):
-    funcion(pattern, hex_range)
+def sys_call_app(pattern, hex_range, function):
+    function(pattern, hex_range)
 
 
 if __name__ == "__main__":
