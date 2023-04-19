@@ -1,3 +1,4 @@
+import sys
 import itertools
 from bit import Key
 from tqdm import tqdm
@@ -35,6 +36,10 @@ def convert_split(range_str, divisions=100):
 
     return data
 
+def sub_iterator(iterator):
+    return iterator.start(), iterator.stop()
+
+
 ################### OLD ###################
 def divide_chunks(l, n):
     # looping till length l
@@ -48,20 +53,27 @@ def generate_batch(min, max, p=100):
 
     return splitted_list, chunk
 
-if __name__ == "__main__":
+def main_loop(pattern, range_str):
     dt = convert_split(range_str, 100)
-    print(dt)
+    #print(dt)
     for i in tqdm(dt['range_iterator'], desc='Main Loop'):
-        #print(i)
+        #print(sub_iterator(i))
         for c in tqdm(i, desc='Sedondary Loop'):
             priv, address = generate_account(scalar=c)
             #print(priv, address)
             if address == pattern:
-                print('Result: ', priv, address)
+                result = priv, address
+                print('Result: ', result)
+                return result
                 break
         else:
             continue
         break
+
+if __name__ == "__main__":
+    argv = sys.argv
+    main_loop(argv[1], argv[2])
+
 
 
     """
