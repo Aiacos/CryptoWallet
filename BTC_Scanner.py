@@ -9,8 +9,8 @@ import threading
 pattern = '13zb1hQbWVsc2S7ZTZnP2G4undNNpdh5so'
 range_str = '20000000000000000:3ffffffffffffffff'
 
-pattern = '1LeBZP5QCwwgXRtmVUvTVrraqPUokyLHqe'
-range_str = '200:3ff'
+pattern = '1rSnXMr63jdCuegJFuidJqWxUPV7AtUf7'
+range_str = '800000:ffffff'
 
 
 def generate_account(hex=None, scalar=None):
@@ -33,20 +33,14 @@ def convert_split(range_str, divisions=100):
     chunk = int((int_max - int_min) / (divisions))
 
     it = range(int_min, int_max)
-    l = chunks_generator(it, chunk)
-    data = {'min': int_min, 'max': int_max, 'iterator_len': sum(1 for _ in l), 'chunk': chunk, 'range_iterator': l}
+    slices = chunks_generator(it, chunk)
+    data = {'min': int_min, 'max': int_max, 'iterator_len': sum(1 for _ in slices), 'chunk': chunk, 'iterator': it, 'iterator_slices': slices}
 
     return data
 
 
-def sub_iterator(it):
-    int_min = more_itertools.first(it)
-    int_max = more_itertools.last(it)
-
-    print(int_min, int_max)
-    print(it)
-    for c in tqdm(it, desc='Sedondary Loop'):
-        print(c)
+def sub_iterator(start, end):
+    for c in tqdm(range(start, end), desc='Sedondary Loop'):
         priv, address = generate_account(scalar=c)
         #print(priv, address)
         if address == pattern:
@@ -66,9 +60,15 @@ def chunks_generator(iterable, size):
 
 def main_loop(pattern, range_str):
     dt = convert_split(range_str, 100)
-    print(dt)
-    for i in tqdm(dt['range_iterator'], desc='Main Loop'):
-        print('Result: ', sub_iterator(i))
+    #print(dt['chunk'])
+    for slice in tqdm(dt['iterator_slices'], desc='Main Loop'):
+        int_min = more_itertools.first(slice)
+        int_max = more_itertools.last(slice)
+
+        result = sub_iterator(int_min, int_max)
+        if result:
+            print('Result: ', result)
+            return
 
 
 if __name__ == "__main__":
