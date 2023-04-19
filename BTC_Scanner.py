@@ -10,46 +10,36 @@ pattern = '1DBaumZxUkM4qMQRt2LVWyFJq5kDtSZQot'
 range_str = '800:fff'
 
 
-def generate_account(hex=None):
-    privKey = Key.from_int(hex)
+def generate_account(hex=None, scalar=None):
+    if scalar:
+        privKey = Key.from_int(scalar)
+        return privKey.to_wif(), privKey.address
+    if hex:
+        privKey = Key.from_int(scalar)
+        return privKey.to_wif(), privKey.address
 
+    privKey = Key()
     return privKey.to_wif(), privKey.address
 
-
-def batch(start, end):
-    pair_list = []
-    for i in tqdm((range(start, end))):
-        priv, address = generate_account(i)
-        if address == pattern:
-            pair_list.append(priv, address)
-            break
-    print(pair_list)
-
-def batch_single():
-    for i in reversed(range(int(range_min, 16), int(range_max, 16) + 1)):
-        priv, address = generate_account(i)
-        #print('Running: ', priv, address, end="\r", flush=True)
-        if address == pattern:
-            print(priv, address)
-            break
-
-
-def divide_chunks(l, n):
-    return itertools.tee(l, n)
-    # looping till length l
-    #for i in range(0, len(l), n):
-    #    yield l[i:i + n - 1]
 
 def convert_split(range_str, divisions=100):
     range_min, range_max = range_str.split(':')
 
     int_min = int(range_min, 16)
     int_max = int(range_max, 16)
+    chunk = (int_max - int_min) / (divisions - 1)
 
-    l, chunk = generate_batch(int_min, int_max, divisions-1)
-    data = {'min': int_min, 'max': int_max, 'range_iterator': l, 'iterator_len': sum(1 for _ in l), 'chunk': chunk}
+    it = range(int_min, int_max)
+    l = itertools.tee(it, divisions)
+    data = {'min': int_min, 'max': int_max, 'iterator_len': sum(1 for _ in l), 'chunk': chunk, 'range_iterator': l}
 
     return data
+
+################### OLD ###################
+def divide_chunks(l, n):
+    # looping till length l
+    for i in range(0, len(l), n):
+        yield l[i:i + n - 1]
 
 def generate_batch(min, max, p=100):
     r = range(min, max)
@@ -59,17 +49,20 @@ def generate_batch(min, max, p=100):
     return splitted_list, chunk
 
 if __name__ == "__main__":
-    k = Key()
-    p = k.public_key
-    print(p.hex(), len(p.hex()))
-
-    dt = convert_split(range_str, 10)
+    dt = convert_split(range_str, 100)
     print(dt)
-    for i in dt['range_iterator']:
-        print(i)
+    for i in tqdm(dt['range_iterator']):
+        #print(i)
         for c in i:
-            pass
-            #print(c)
+            priv, address = generate_account(scalar=c)
+            #print(priv, address)
+            if address == pattern:
+                print('Result: ', priv, address)
+                break
+        else:
+            continue
+        break
+
 
     """
     n_threads = 10
