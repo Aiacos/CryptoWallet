@@ -1,7 +1,7 @@
 beautifulsoup4
+more_itertools
 bit
 coincurve
-deap
 eth-account
 ethers
 flashbots
@@ -17,3 +17,4 @@ urllib3
 web3
 yagmail
 yarl
+deap
