@@ -16,8 +16,8 @@ range_str = '20000000000000000:3ffffffffffffffff'
 pattern = '1rSnXMr63jdCuegJFuidJqWxUPV7AtUf7'
 range_str = '800000:ffffff'
 
-#pattern = '1DBaumZxUkM4qMQRt2LVWyFJq5kDtSZQot'
-#range_str = '800:fff'
+pattern = '1DBaumZxUkM4qMQRt2LVWyFJq5kDtSZQot'
+range_str = '800:fff'
 
 
 result = None
