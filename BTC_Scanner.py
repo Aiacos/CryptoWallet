@@ -7,6 +7,7 @@ import more_itertools
 from bit import Key
 from tqdm import tqdm
 import threading
+import subprocess
 
 pattern = '13zb1hQbWVsc2S7ZTZnP2G4undNNpdh5so'
 range_str = '20000000000000000:3ffffffffffffffff'
@@ -81,30 +82,30 @@ def sys_call_app(pattern, hex_range, function):
     function(pattern, hex_range)
 
 def run_keyhunt_cuda(pattern, hex_range, project='KeyHuntCudaClient', workspace='workspace'):
-    path_to_project = Path.home() / 'Documents' / workspace / project / 'x64' / 'Release'
+    path_to_project = Path.home() / 'Documents' / workspace / project
     win_key_cmd = './KeyHunt-Cuda.exe'
     linux_key_cmd = './KeyHunt'
     args = '-c BTC -m address -g --gpui 0 -r ' + hex_range
-
-    os.system('cd ' + str(path_to_project))
 
     # Write BTC address to file
     #os.system('echo "' + pattern + '" > btc_list.txt')
 
     if sys.platform.startswith('win'):
+        os.system('cd ' + str(path_to_project / 'x64' / 'Release') + '\\')
         cmd = ' '.join((win_key_cmd, args, pattern))
-        os.system(cmd)
+        subprocess.run(cmd)
         print('Running Windows: ', cmd)
     else:
+        os.system('cd ' + str(path_to_project))
         cmd = ' '.join((linux_key_cmd, args, pattern))
-        os.system(cmd)
+        subprocess.run(cmd)
         print('Running UNIX: ', cmd)
 
 
 if __name__ == "__main__":
     argv = sys.argv
     #main_loop(argv[1], argv[2], run_keyhunt_cuda)
-    main_loop(pattern, range_str, run_keyhunt_cuda)
+    main_loop(pattern, range_str)
 
     """
     n_threads = 10
