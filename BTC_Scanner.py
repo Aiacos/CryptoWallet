@@ -87,7 +87,7 @@ def generate_batch(min, max, p=100):
 def chunks_generator(iterable, size):
     """Generate adjacent chunks of data"""
 
-    it_slice = itertools.divide(size, iterable)
+    it_slice = more_itertools.divide(size, iterable)
 
     return it_slice
 
@@ -96,8 +96,8 @@ def main_loop(pattern, range_str, sys_call=None):
     dt = convert_split(range_str, 100)
     #print(dt['chunk'])
     for slice in tqdm(dt['iterator_slices'], desc='Main Loop'):
-        int_min = itertools.first(slice)
-        int_max = itertools.last(slice)
+        int_min = more_itertools.first(slice)
+        int_max = more_itertools.last(slice)
         str_hex_range = hex(int_min) + ':' + hex(int_max)
 
         if sys_call:
