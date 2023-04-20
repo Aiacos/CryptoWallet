@@ -38,7 +38,10 @@ def convert_split(range_str, divisions=100):
     chunk = int((int_max - int_min) / (divisions))
 
     it = range(int_min, int_max)
-    slices = chunks_generator(it, chunk)
+    #slices = chunks_generator(it, chunk)
+    slices = []
+    for i in range(int_min, int_max, chunk):
+        slices.append(range(i, i + chunk))
     data = {'min': int_min, 'max': int_max, 'iterator_len': sum(1 for _ in slices), 'chunk': chunk, 'iterator': it, 'iterator_slices': slices}
 
     return data
@@ -58,14 +61,14 @@ def sub_iterator(start, end):
 def chunks_generator(iterable, size):
     """Generate adjacent chunks of data"""
 
-    it_slice = more_itertools.divide(size, iterable)
+    it_slice = more_itertools.windowed(iterable, size, size)
 
     return it_slice
 
 
 def main_loop(pattern, range_str, sys_call=None):
     dt = convert_split(range_str, 100)
-    #print(dt['chunk'])
+    print(dt)
     for slice in tqdm(dt['iterator_slices'], desc='Main Loop'):
         int_min = more_itertools.first(slice)
         int_max = more_itertools.last(slice)
