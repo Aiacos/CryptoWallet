@@ -9,13 +9,18 @@ from tqdm import tqdm
 import threading
 import subprocess
 
+
 pattern = '13zb1hQbWVsc2S7ZTZnP2G4undNNpdh5so'
 range_str = '20000000000000000:3ffffffffffffffff'
 
-#pattern = '1rSnXMr63jdCuegJFuidJqWxUPV7AtUf7'
-#range_str = '800000:ffffff'
+pattern = '1rSnXMr63jdCuegJFuidJqWxUPV7AtUf7'
+range_str = '800000:ffffff'
+
+pattern = '1DBaumZxUkM4qMQRt2LVWyFJq5kDtSZQot'
+range_str = '800:fff'
 
 
+result = None
 def generate_account(hex=None, scalar=None):
     if scalar:
         privKey = Key.from_int(scalar)
@@ -42,16 +47,18 @@ def convert_split(range_str, divisions=100):
     return data
 
 def check_address(start, end):
-    for c in tqdm(range(start, end), desc='Secondary Loop'):
+    global result
+    for c in range(start, end):
         priv, address = generate_account(scalar=c)
         #print(priv, address)
         if address == pattern:
             result = priv, address
-            print('Result: ', result)
+            #print('Result: ', result)
 
             return result
 
 def sub_iterator(start, end):
+    global result
     n_threads = os.cpu_count() * 2
 
     x_range = [*range(start, end)]
@@ -66,21 +73,20 @@ def sub_iterator(start, end):
     for t in thread_list:
         t.start()
 
+    t_continue = True
+    while t_continue:
+        for t in thread_list:
+            if not t.is_alive():
+                t_continue = False
+
+        if result:
+            return result
+
 ################### OLD ###################
 def divide_chunks(l, n):
     # looping till length l
     for i in range(0, len(l), n):
         yield l[i:i + n - 1]
-
-
-def generate_batch(min, max, p=100):
-    r = range(min, max)
-    chunk = (max - min) / p
-    splitted_list = divide_chunks(r, int(chunk))
-
-    return splitted_list, chunk
-
-
 #############
 
 
@@ -137,7 +143,3 @@ if __name__ == "__main__":
     argv = sys.argv
     #main_loop(argv[1], argv[2], run_keyhunt_cuda)
     main_loop(pattern, range_str)
-
-    """
-
-    """
