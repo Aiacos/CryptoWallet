@@ -12,11 +12,11 @@ import subprocess
 pattern = '13zb1hQbWVsc2S7ZTZnP2G4undNNpdh5so'
 range_str = '20000000000000000:3ffffffffffffffff'
 
-pattern = '1rSnXMr63jdCuegJFuidJqWxUPV7AtUf7'
-range_str = '800000:ffffff'
+#pattern = '1rSnXMr63jdCuegJFuidJqWxUPV7AtUf7'
+#range_str = '800000:ffffff'
 
-pattern = '1DBaumZxUkM4qMQRt2LVWyFJq5kDtSZQot'
-range_str = '800:fff'
+#pattern = '1DBaumZxUkM4qMQRt2LVWyFJq5kDtSZQot'
+#range_str = '800:fff'
 
 def generate_account(hex=None, scalar=None):
     if scalar:
@@ -53,7 +53,6 @@ def sub_iterator(start, end):
         #print(priv, address)
         if address == pattern:
             result = priv, address
-            print('Result: ', result)
 
             return result
 
@@ -66,8 +65,8 @@ def chunks_generator(iterable, size):
     return it_slice
 
 
-def main_loop(pattern, range_str, sys_call=None):
-    dt = convert_split(range_str, 100)
+def main_loop(pattern, range_str, sys_call=None, divide=1000000):
+    dt = convert_split(range_str, divide)
     print(dt)
     for slice in tqdm(dt['iterator_slices'], desc='Main Loop'):
         int_min = more_itertools.first(slice)
