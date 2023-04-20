@@ -80,25 +80,31 @@ def main_loop(pattern, range_str, sys_call=None):
 def sys_call_app(pattern, hex_range, function):
     function(pattern, hex_range)
 
-def run_keyhunt(pattern, hex_range, project='keyhunt', workspace='workspace'):
-    path_to_project = Path.home() / workspace / project
-    win_key_cmd = './keyhunt.exe'
-    linux_key_cmd = './keyhunt'
-    args = 'test1 test2 test3'
+def run_keyhunt_cuda(pattern, hex_range, project='KeyHuntCudaClient', workspace='workspace'):
+    path_to_project = Path.home() / 'Documents' / workspace / project / 'x64' / 'Release'
+    win_key_cmd = './KeyHunt-Cuda.exe'
+    linux_key_cmd = './KeyHunt'
+    args = '-c BTC -m address -g --gpui 0 -r ' + hex_range
 
     os.system('cd ' + str(path_to_project))
 
+    # Write BTC address to file
+    #os.system('echo "' + pattern + '" > btc_list.txt')
+
     if sys.platform.startswith('win'):
-        os.system('')
-        print('Running Windows', ' '.join((win_key_cmd, args)))
+        cmd = ' '.join((win_key_cmd, args, pattern))
+        os.system(cmd)
+        print('Running Windows: ', cmd)
     else:
-        print('Running UNIX', ' '.join((win_key_cmd, args)))
+        cmd = ' '.join((linux_key_cmd, args, pattern))
+        os.system(cmd)
+        print('Running UNIX: ', cmd)
 
 
 if __name__ == "__main__":
     argv = sys.argv
-    main_loop(argv[1], argv[2], run_keyhunt)
-    #main_loop(pattern, range_str)
+    #main_loop(argv[1], argv[2], run_keyhunt_cuda)
+    main_loop(pattern, range_str, run_keyhunt_cuda)
 
     """
     n_threads = 10
