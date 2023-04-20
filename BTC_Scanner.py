@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 import itertools
 #from itertools import batched
-import more_itertools
+#import more_itertools
 from bit import Key
 from tqdm import tqdm
 import threading
@@ -12,8 +12,8 @@ import subprocess
 pattern = '13zb1hQbWVsc2S7ZTZnP2G4undNNpdh5so'
 range_str = '20000000000000000:3ffffffffffffffff'
 
-pattern = '1rSnXMr63jdCuegJFuidJqWxUPV7AtUf7'
-range_str = '800000:ffffff'
+#pattern = '1rSnXMr63jdCuegJFuidJqWxUPV7AtUf7'
+#range_str = '800000:ffffff'
 
 
 def generate_account(hex=None, scalar=None):
@@ -41,9 +41,8 @@ def convert_split(range_str, divisions=100):
 
     return data
 
-
-def sub_iterator(start, end):
-    for c in tqdm(range(start, end), desc='Sedondary Loop'):
+def check_address(start, end):
+    for c in tqdm(range(start, end), desc='Secondary Loop'):
         priv, address = generate_account(scalar=c)
         #print(priv, address)
         if address == pattern:
@@ -52,11 +51,43 @@ def sub_iterator(start, end):
 
             return result
 
+def sub_iterator(start, end):
+    n_threads = os.cpu_count() * 2
+
+    x_range = [*range(start, end)]
+    x = list(divide_chunks(x_range, n_threads))
+
+    thread_list = []
+    for t in range(0, len(x)):
+        start, end = x[t][0], x[t][-1]
+        cluster = threading.Thread(target=check_address, args=(start, end,))
+        thread_list.append(cluster)
+
+    for t in thread_list:
+        t.start()
+
+################### OLD ###################
+def divide_chunks(l, n):
+    # looping till length l
+    for i in range(0, len(l), n):
+        yield l[i:i + n - 1]
+
+
+def generate_batch(min, max, p=100):
+    r = range(min, max)
+    chunk = (max - min) / p
+    splitted_list = divide_chunks(r, int(chunk))
+
+    return splitted_list, chunk
+
+
+#############
+
 
 def chunks_generator(iterable, size):
     """Generate adjacent chunks of data"""
 
-    it_slice = more_itertools.divide(size, iterable)
+    it_slice = itertools.divide(size, iterable)
 
     return it_slice
 
@@ -65,8 +96,8 @@ def main_loop(pattern, range_str, sys_call=None):
     dt = convert_split(range_str, 100)
     #print(dt['chunk'])
     for slice in tqdm(dt['iterator_slices'], desc='Main Loop'):
-        int_min = more_itertools.first(slice)
-        int_max = more_itertools.last(slice)
+        int_min = itertools.first(slice)
+        int_max = itertools.last(slice)
         str_hex_range = hex(int_min) + ':' + hex(int_max)
 
         if sys_call:
@@ -108,18 +139,5 @@ if __name__ == "__main__":
     main_loop(pattern, range_str)
 
     """
-    n_threads = 10
 
-    x_range = [*range(int(range_min, 16), int(range_max, 16))]
-    #print(x_range)
-    x = list(divide_chunks(x_range, n_threads))
-
-    thread_list = []
-    for t in range(0, len(x)):
-        start, end = x[t][0], x[t][-1]
-        cluster = threading.Thread(target=batch, args=(start, end,))
-        thread_list.append(cluster)
-
-    for t in thread_list:
-        t.start()
     """
