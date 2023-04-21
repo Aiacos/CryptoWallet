@@ -4,7 +4,6 @@ coincurve
 deap
 eth-account
 ethers
-flashbots
 lxml
 matplotlib
 numba
