@@ -86,7 +86,7 @@ def sys_call_app(pattern, hex_range, function):
     function(pattern, hex_range)
 
 def run_keyhunt_cuda(pattern, hex_range, project='KeyHuntCudaClient', workspace='workspace'):
-    path_to_project = Path.home() / 'Documents' / workspace / project
+    path_to_project = Path.home() / 'Documents' / workspace / project / 'x64' / 'Release' / '\\'
     win_key_cmd = './KeyHunt-Cuda.exe'
     linux_key_cmd = './KeyHunt'
     args = '-c BTC -m address -g --gpui 0 -r ' + hex_range
@@ -95,10 +95,9 @@ def run_keyhunt_cuda(pattern, hex_range, project='KeyHuntCudaClient', workspace=
     #os.system('echo "' + pattern + '" > btc_list.txt')
 
     if sys.platform.startswith('win'):
-        os.system('cd ' + str(path_to_project / 'x64' / 'Release') + '\\')
-        cmd = ' '.join((win_key_cmd, args, pattern))
-        subprocess.run(cmd)
-        print('Running Windows: ', cmd)
+        cmd = ' '.join((path_to_project + win_key_cmd, args, pattern))
+        subprocess.run(cmd, shell=True, capture_output=True)
+        print('Running Windows: ', cmd.replace('\\', '/'))
     else:
         os.system('cd ' + str(path_to_project))
         cmd = ' '.join((linux_key_cmd, args, pattern))
@@ -109,7 +108,7 @@ def run_keyhunt_cuda(pattern, hex_range, project='KeyHuntCudaClient', workspace=
 if __name__ == "__main__":
     argv = sys.argv
     #main_loop(argv[1], argv[2], run_keyhunt_cuda)
-    main_loop(pattern, range_str)
+    main_loop(pattern, range_str, run_keyhunt_cuda)
 
     """
     n_threads = 10
