@@ -9,6 +9,7 @@ from datetime import date
 import time
 import yagmail
 import wallet
+from tqdm import tqdm
 
 pattern = '0x324e2D42D7B65E5574787C331DfaA29d2Dead666'
 
@@ -68,7 +69,7 @@ class RandomGenerateAddress:
                     self.valid_address_list.append(key)
                     if console_print: print(key)
         else:
-            for i in range(0, iteration_limit):
+            for i in tqdm(range(0, iteration_limit)):
                 key = self.generate_and_check_balance(gen_mode, check_balance)
                 if console_print_empty: print(key, end="\r", flush=True)
 
@@ -175,8 +176,8 @@ if __name__ == "__main__":
     # yagmail.register('username', 'password')
 
     jobs = []
-    jobs.append(multiprocessing.Process(target=scheduler_generate_infura, args=(8, ), name='Infura_ETH'))
-    jobs.append(multiprocessing.Process(target=scheduler_generate_alchemy, args=(8, ), name='Alchemy_ETH'))
+    jobs.append(multiprocessing.Process(target=scheduler_generate_infura, args=(1, ), name='Infura_ETH'))
+    #jobs.append(multiprocessing.Process(target=scheduler_generate_alchemy, args=(8, ), name='Alchemy_ETH'))
     #jobs.append(multiprocessing.Process(target=process_generate_vanity_eth, name='Vanity_ETH', args=(pattern, 256)))
 
     for j in jobs:
