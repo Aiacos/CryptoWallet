@@ -86,18 +86,19 @@ def sys_call_app(pattern, hex_range, function):
     function(pattern, hex_range)
 
 def run_keyhunt_cuda(pattern, hex_range, project='KeyHuntCudaClient', workspace='workspace'):
-    path_to_project = Path.home() / 'Documents' / workspace / project / 'x64' / 'Release' / '\\'
-    win_key_cmd = './KeyHunt-Cuda.exe'
-    linux_key_cmd = './KeyHunt'
-    args = '-c BTC -m address -g --gpui 0 -r ' + hex_range
+    path_to_project = Path.home() / 'Documents' / workspace / project / 'x64' / 'Release'
+    win_key_cmd = 'KeyHunt-Cuda.exe'
+    linux_key_cmd = 'KeyHunt'
+    args = '--coin BTC -m address -g --gpui 0 -r ' + str(hex_range).replace('0x', '').lower()
 
     # Write BTC address to file
     #os.system('echo "' + pattern + '" > btc_list.txt')
 
     if sys.platform.startswith('win'):
-        cmd = ' '.join((path_to_project + win_key_cmd, args, pattern))
-        subprocess.run(cmd, shell=True, capture_output=True)
-        print('Running Windows: ', cmd.replace('\\', '/'))
+        cmd = ' '.join((str(path_to_project) + '\\' + win_key_cmd, args, pattern))
+        print('Running Windows: ', cmd)
+        result = subprocess.run(cmd, shell=True, capture_output=True)
+        print(result.stdout.decode())
     else:
         os.system('cd ' + str(path_to_project))
         cmd = ' '.join((linux_key_cmd, args, pattern))
