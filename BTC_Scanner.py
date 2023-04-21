@@ -8,6 +8,7 @@ from bit import Key
 from tqdm import tqdm
 import threading
 import subprocess
+import math
 
 pattern = '13zb1hQbWVsc2S7ZTZnP2G4undNNpdh5so'
 range_str = '20000000000000000:3ffffffffffffffff'
@@ -65,18 +66,29 @@ def chunks_generator(iterable, size):
     return it_slice
 
 
-def main_loop(pattern, range_str, sys_call=None, divide=1000000):
+def main_loop(pattern, range_str, sys_call=None, divide=10):
     dt = convert_split(range_str, divide)
     print(dt)
-    for slice in tqdm(dt['iterator_slices'], desc='Main Loop'):
+    priority_list = (priority_generator(divide))
+
+    run_by_priority_list = []
+    for slice, p in tqdm(zip(dt['iterator_slices'], priority_list), desc='Prepare Loop'):
         int_min = more_itertools.first(slice)
         int_max = more_itertools.last(slice)
         str_hex_range = hex(int_min) + ':' + hex(int_max)
 
+        priority = p[1]
+        index = p[0]
+
+        run_by_priority_list.append([priority, index, str_hex_range])
+
+    for i in tqdm(sorted(run_by_priority_list, key=lambda l:l[0], reverse=True), desc='Main Loop'):
+        print('\nRunnin Priority: ', i[0], ' Index: ', i[1], ' Range: ', i[2])
         if sys_call:
             sys_call_app(pattern, str_hex_range, sys_call)
         else:
-            result = sub_iterator(int_min, int_max)
+            range_min, range_max = range_str.split(':')
+            result = sub_iterator(int(range_min, 16), int(range_max, 16))
             if result:
                 print('Result: ', result)
                 return
@@ -104,6 +116,28 @@ def run_keyhunt_cuda(pattern, hex_range, project='KeyHuntCudaClient', workspace=
         print('Running Windows: ', cmd)
         result = subprocess.run(cmd, shell=True, capture_output=True)
         print(result.stdout.decode())
+
+
+def laplaceDistribution2(x, beta=0.5, mu=5):
+    """
+    Laplace distribution Function
+    :param x: float
+    :param beta: float
+    :param mu: float
+    :return: float
+    """
+    x = x * 10
+    core = math.e ** (-1 * abs(x - mu) / beta)
+    y = core / (2 * beta)
+    return y
+def priority_generator(sampling):
+    return_list = []
+    step = 100 / sampling
+    for i in [round(x * (1/sampling), 6) for x in range(0, sampling + 1)]:
+        y = laplaceDistribution2(i)
+        return_list.append([i, y])
+
+    return return_list
 
 
 if __name__ == "__main__":
