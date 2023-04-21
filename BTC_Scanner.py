@@ -100,10 +100,10 @@ def run_keyhunt_cuda(pattern, hex_range, project='KeyHuntCudaClient', workspace=
         result = subprocess.run(cmd, shell=True, capture_output=True)
         print(result.stdout.decode())
     else:
-        os.system('cd ' + str(path_to_project))
-        cmd = ' '.join((linux_key_cmd, args, pattern))
-        subprocess.run(cmd)
-        print('Running UNIX: ', cmd)
+        cmd = ' '.join((str(path_to_project) + '\\' + linux_key_cmd, args, pattern))
+        print('Running Windows: ', cmd)
+        result = subprocess.run(cmd, shell=True, capture_output=True)
+        print(result.stdout.decode())
 
 
 if __name__ == "__main__":
