@@ -89,7 +89,7 @@ def run_keyhunt_cuda(pattern, hex_range, project='KeyHuntCudaClient', workspace=
     path_to_project = Path.home() / 'Documents' / workspace / project / 'x64' / 'Release'
     win_key_cmd = 'KeyHunt-Cuda.exe'
     linux_key_cmd = 'KeyHunt'
-    args = '--coin BTC -m address -g --gpui 0 -r ' + str(hex_range).replace('0x', '').lower()
+    args = '--coin BTC -m address -g --gpui 0 --range ' + str(hex_range).replace('0x', '').lower()
 
     # Write BTC address to file
     #os.system('echo "' + pattern + '" > btc_list.txt')
