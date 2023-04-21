@@ -85,9 +85,9 @@ def main_loop(pattern, range_str, sys_call=None, divide=10):
     for i in tqdm(sorted(run_by_priority_list, key=lambda l:l[0], reverse=True), desc='Main Loop'):
         print('\nRunnin Priority: ', i[0], ' Index: ', i[1], ' Range: ', i[2])
         if sys_call:
-            sys_call_app(pattern, str_hex_range, sys_call)
+            sys_call_app(pattern, i[2], sys_call)
         else:
-            range_min, range_max = range_str.split(':')
+            range_min, range_max = i[2].split(':')
             result = sub_iterator(int(range_min, 16), int(range_max, 16))
             if result:
                 print('Result: ', result)
