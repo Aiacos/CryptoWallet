@@ -3,13 +3,17 @@ from eth_account._utils.signing import extract_chain_id, to_standard_v
 from eth_account._utils.legacy_transactions import ALLOWED_TRANSACTION_KEYS
 from eth_account._utils.legacy_transactions import serializable_unsigned_transaction_from_dict
 from eth_keys.datatypes import Signature
+import requests
 
 
 infura_endpoint = 'https://mainnet.infura.io/v3/972b4b8a084b434bba97948637e946be'
+infura_API = 'PY49HDD1DPEEX9PE6PUZ56VP38493ARBGM'
+
 w3 = web3.Web3(web3.HTTPProvider(infura_endpoint))
 
+address = '0x324e2D42D7B65E5574787C331DfaA29d2Dead666'
 transaction = 0xe606a67d46b6663b472197579f3c3e2bca657b946a0f5ec1b17b00978b00bfc5
-
+url = 'https://api.etherscan.io/api?module=account&action=txlist&address=' + address + '&startblock=0&endblock=99999999&page=1&offset=10&sort=asc&apikey=' + infura_API
 # https://api.etherscan.io/api?module=account&action=txlist&address=0x324e2D42D7B65E5574787C331DfaA29d2Dead666&startblock=0&endblock=99999999&page=1&offset=10&sort=asc&apikey=PY49HDD1DPEEX9PE6PUZ56VP38493ARBGM
 d = {"status":"1","message":"OK","result":[
     {"blockNumber":"15695286","timeStamp":"1665134363","hash":"0xbac992db6a9660f6ebcdd483c244dfa1948ab8b9a63184eb3015e00258c5d1af","nonce":"5","blockHash":"0xaeedcd887a82bf916ca5194dd3c7f7a625c6b28d006a1363ea1cb0cc4f126537","transactionIndex":"244","from":"0xcac191ab410b5c225779cec01163ab7d717d3666","to":"0x324e2d42d7b65e5574787c331dfaa29d2dead666","value":"6882485956269079","gas":"21000","gasPrice":"6362913733","isError":"0","txreceipt_status":"1","input":"0x","contractAddress":"","cumulativeGasUsed":"17407223","gasUsed":"21000","confirmations":"1383852","methodId":"0x","functionName":""},
@@ -22,6 +26,8 @@ d = {"status":"1","message":"OK","result":[
     {"blockNumber":"15695583","timeStamp":"1665137927","hash":"0x5c383ac8cafdcdd1e4ec8138880de4125e799849b4a04cdb30d85ddd1e5655ff","nonce":"6","blockHash":"0xeca31361431f07250be77259915bcc062c3e54d92ccee874b9e76cb1da8246f9","transactionIndex":"74","from":"0x324e2d42d7b65e5574787c331dfaa29d2dead666","to":"0xeef417e1d5cc832e619ae18d2f140de2999dd4fb","value":"0","gas":"399967","gasPrice":"6434778487","isError":"0","txreceipt_status":"1","input":"0x2e1a7d4d00000000000000000000000000000000000000000000000000000000000015c3","contractAddress":"","cumulativeGasUsed":"6163338","gasUsed":"312700","confirmations":"1383555","methodId":"0x2e1a7d4d","functionName":"withdraw(uint256 amount)"},{"blockNumber":"15695615","timeStamp":"1665138311","hash":"0x61225a4becc66f0db00483c142fe5957497c8392bbbb16edb42cf2942deb3806","nonce":"7","blockHash":"0xae68a2cfb79a451a0da977897da4034f51ce220b80307322a8cff4f7ba3d9de5","transactionIndex":"180","from":"0x324e2d42d7b65e5574787c331dfaa29d2dead666","to":"0x408e41876cccdc0f92210600ef50372656052a38","value":"0","gas":"55918","gasPrice":"6022140950","isError":"0","txreceipt_status":"1","input":"0x095ea7b30000000000000000000000001111111254fb6c44bac0bed2854e76f90643097dffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff","contractAddress":"","cumulativeGasUsed":"17117776","gasUsed":"48624","confirmations":"1383523","methodId":"0x095ea7b3","functionName":"approve(address _spender, uint256 _value)"},
     {"blockNumber":"15695618","timeStamp":"1665138347","hash":"0x4c75a4a96a2375f2b0d9a89a6f188ba6930f7fd8613ddac3b57e3162deb06b9c","nonce":"8","blockHash":"0xd55d2169d64124ee5f266ad0655ac38a3289507738733df0f85417fff7203045","transactionIndex":"248","from":"0x324e2d42d7b65e5574787c331dfaa29d2dead666","to":"0x1111111254fb6c44bac0bed2854e76f90643097d","value":"0","gas":"166287","gasPrice":"4832356260","isError":"0","txreceipt_status":"1","input":"0x2e95b6c8000000000000000000000000408e41876cccdc0f92210600ef50372656052a38000000000000000000000000000000000000000000000014a73f27bb57d6aabf000000000000000000000000000000000000000000000000008090c54d5a33310000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000140000000000000003b6d03408bd1661da98ebdd3bd080f0be4e6d9be8ce9858ce26b9977","contractAddress":"","cumulativeGasUsed":"29879150","gasUsed":"107371","confirmations":"1383520","methodId":"0x2e95b6c8","functionName":"unoswap(address srcToken, uint256 amount, uint256 minReturn, bytes32[])"}]}
 
+d2 = requests.get(url)
+print('D2: ', d2.text)
 def pub_key_from_tx_eth1(txid):
     tx = w3.eth.getTransaction(txid)
     #print('tx.hash: ', tx.hash)
