@@ -111,7 +111,8 @@ if __name__ == "__main__":
             publicKey_list.append(p_key1)
             #publicKey_list.append(p_key2)
 
-    for i in publicKey_list:
+
+    for i in [dict(t) for t in {tuple(d.items()) for d in publicKey_list}]:
         if i['address'] == address:
             print(i)
     else:
