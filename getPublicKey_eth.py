@@ -100,7 +100,7 @@ def pub_key_from_tx_eth2(txid, chain='ETH'):
 if __name__ == "__main__":
     argv = sys.argv
     address = argv[1]
-    tx_count = argv[2]
+    tx_count = argv[2] if len(argv) < 2 else str(1000)
 
     publicKey_list = []
     for i in tqdm(get_tx_list(address, tx_count)["result"], desc='Searching Public Address'):
