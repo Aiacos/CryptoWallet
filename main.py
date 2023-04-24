@@ -69,7 +69,7 @@ class RandomGenerateAddress:
                     self.valid_address_list.append(key)
                     if console_print: print(key)
         else:
-            for i in tqdm(range(0, iteration_limit)):
+            for i in tqdm(range(0, iteration_limit), desc='ETH address scan'):
                 key = self.generate_and_check_balance(gen_mode, check_balance)
                 if console_print_empty: print(key, end="\r", flush=True)
 
