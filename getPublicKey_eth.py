@@ -1,3 +1,4 @@
+import sys
 import web3
 from eth_account._utils.signing import extract_chain_id, to_standard_v
 from eth_account._utils.legacy_transactions import ALLOWED_TRANSACTION_KEYS
@@ -13,12 +14,15 @@ infura_API = 'PY49HDD1DPEEX9PE6PUZ56VP38493ARBGM'
 
 w3 = web3.Web3(web3.HTTPProvider(infura_endpoint))
 
-address = '0xd28b93e8b045cfbc02ac93454660d3673b60a38d'
-url = 'https://api.etherscan.io/api?module=account&action=txlist&address=' + address + '&startblock=0&endblock=99999999&page=1&offset=10&sort=asc&apikey=' + infura_API
-# https://api.etherscan.io/api?module=account&action=txlist&address=0x324e2D42D7B65E5574787C331DfaA29d2Dead666&startblock=0&endblock=99999999&page=1&offset=10&sort=asc&apikey=PY49HDD1DPEEX9PE6PUZ56VP38493ARBGM
 
-result = requests.get(url)
-transactions_dict = json.loads(str(result.text))
+def get_tx_list(address, tx_count):
+    url = 'https://api.etherscan.io/api?module=account&action=txlist&address=' + address + '&startblock=0&endblock=99999999&page=1&offset=' + tx_count + '&sort=asc&apikey=' + infura_API
+    # https://api.etherscan.io/api?module=account&action=txlist&address=0x324e2D42D7B65E5574787C331DfaA29d2Dead666&startblock=0&endblock=99999999&page=1&offset=10&sort=asc&apikey=PY49HDD1DPEEX9PE6PUZ56VP38493ARBGM
+
+    result = requests.get(url)
+    transactions_dict = json.loads(str(result.text))
+
+    return transactions_dict
 
 
 def pub_key_from_tx_eth1(txid):
@@ -92,17 +96,24 @@ def pub_key_from_tx_eth2(txid, chain='ETH'):
         #raise ValueError("Unable to obtain public key from transaction: " + f"{txid}")
     return({'public_key': rec_pub, 'address': transaction['from']})
 
-publicKey_list = []
-for i in tqdm(transactions_dict["result"], desc='Searching Public Address'):
-    #print(i['hash'])
-    p_key1 = pub_key_from_tx_eth1(i['hash'])
-    #p_key2 = pub_key_from_tx_eth2(i['hash'])
-    if p_key1:
-        publicKey_list.append(p_key1)
-        #publicKey_list.append(p_key2)
 
-for i in publicKey_list:
-    if i['address'] == address:
-        print(i)
+if __name__ == "__main__":
+    argv = sys.argv
+    address = argv[1]
+    tx_count = argv[2]
+
+    publicKey_list = []
+    for i in tqdm(get_tx_list(address, tx_count)["result"], desc='Searching Public Address'):
+        #print(i['hash'])
+        p_key1 = pub_key_from_tx_eth1(i['hash'])
+        #p_key2 = pub_key_from_tx_eth2(i['hash'])
+        if p_key1:
+            publicKey_list.append(p_key1)
+            #publicKey_list.append(p_key2)
+
+    for i in publicKey_list:
+        if i['address'] == address:
+            print(i)
     else:
-        print('Not Correct: ', i)
+        pass
+        #print('Not Correct: ', i)
