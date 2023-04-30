@@ -20,4 +20,4 @@ if __name__ == "__main__":
     tx_hash = argv[1]
 
     public_key = get_btc_public_key_from_txhash(tx_hash)
-    print(public_key)
+    print('Public Key: ', public_key)
